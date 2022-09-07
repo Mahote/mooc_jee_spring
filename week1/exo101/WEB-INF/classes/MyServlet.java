@@ -11,26 +11,52 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/dist")
 public class MyServlet extends HttpServlet {
 
-	// @Override
-	protected void doXXX(HttpServletRequest req, HttpServletResponse resp) 
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) 
 	throws ServletException, IOException {
-		// TODO : show a HTML form with 4 input text (2 for each point)
-		//        your input must be named 'p1lat', 'p1lng', 'p2lat', 'p2lng'
-
+		
 		Writer out = resp.getWriter();
-		out.write("Show form");
+		out.write("<body>");
+		out.write("<FORM METHOD=POST>");
+		out.write("p1lat : <INPUT NAME=\"p1lat\">");
+		out.write("p1lng : <INPUT NAME=\"p1lng\"> <BR>");
+		out.write("p2lat : <INPUT NAME=\"p2lat\">"); 
+		out.write("p2lng : <INPUT NAME=\"p2lng\"> <br>");
+		out.write("<input type=submit value=\"envoi\"></form>");
+
+		out.write("</body");
+
 	}
 	
-	// @Override
-	protected void doYYY(HttpServletRequest req, HttpServletResponse resp) 
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) 
 	throws ServletException, IOException {
-		// TODO : get first point latitude / longitude
-		// TODO : get second point latitude / longitude
-		// TODO : compute distance between two points
-		// TODO : display distance, in kilometer with 1 decimal
 
+		double p1lat = Double.parseDouble((String) req.getParameter("p1lat"));
+		double p1lng = Double.parseDouble((String) req.getParameter("p1lng"));
+		double p2lat = Double.parseDouble((String) req.getParameter("p2lat"));
+		double p2lng = Double.parseDouble((String) req.getParameter("p2lng"));
+
+		double R = 6371;
+		double phi1 = p1lat * Math.PI/180;
+		double phi2 = p2lat * Math.PI/180;
+
+		double deltaphi = (p2lat - p1lat) * Math.PI/180;
+		double deltalambda = (p2lng - p1lng) * Math.PI/180;
+
+		double a = Math.sin(deltaphi/2) * Math.sin(deltaphi/2) +
+			Math.cos(phi1) * Math.cos(phi2) * 
+			Math.sin(deltalambda/2) * Math.sin(deltalambda/2);
+
+		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+		double d = R * c;
+
+		
 		Writer out = resp.getWriter();
-		out.write("Display result");
+		out.write("<body>");
+		out.write("distance : " + Math.round(d * 10.0)/10.0);
+		out.write("</body>");
 	}
 
 }
