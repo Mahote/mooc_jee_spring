@@ -24,7 +24,8 @@ public class BagServlet extends HttpServlet {
 		out.write("<form method=\"post\">");
 		out.write("ref : <input name=\"ref\"> <BR>");
 		out.write("qty : <input name=\"qty\"> <BR>");
-		out.write("<input type=\"submit\" value=\"envoi\"></form>");
+		out.write("<input type=\"submit\" value=\"envoi\"></form>"); 
+		myBag.print(out);
 		out.write("</body>");
 		
 		// TODO : print a html form using printwriter.
@@ -52,7 +53,7 @@ public class BagServlet extends HttpServlet {
 			res.sendError(400);
 		}
 		myBag.setItem(ref, qtyint);
-		res.sendRedirect("/bag");
+		res.sendRedirect(req.getContextPath()+"/bag");
 
 	}
 	
