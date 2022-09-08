@@ -12,25 +12,36 @@ import javax.servlet.RequestDispatcher;
 // TODO: add an annotation here to map your servlet on an URL.
 @WebServlet("/bag")
 public class BagServlet extends HttpServlet {
+	public static String jspView="/WEB-INF/bag.jsp";
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse res) 
 	throws ServletException, IOException {
 		res.setContentType("text/html");
 		PrintWriter out = res.getWriter();
-
+		/*
 		out.write("<body>");
 		out.write("<form method=\"post\">");
 		out.write("ref : <input name=\"ref\"> <BR>");
 		out.write("qty : <input name=\"qty\"> <BR>");
 		out.write("<input type=\"submit\" value=\"envoi\"></form>"); 
-		Bag bag = (Bag) req.getSession().getAttribute("Bag");
+		*/
+		
+		Bag bag = (Bag) req.getSession().getAttribute("bag");
+		if(bag == null){
+			req.setAttribute("bag",new Bag());
+		} else {
+			req.setAttribute("bag",bag);
+		}
+		
+		RequestDispatcher rd = req.getRequestDispatcher(jspView);
+		rd.forward(req,res);
+		/*
 		if(!(bag == null)){
 			bag.print(out);
 		}
-		
 		out.write("</body>");
-		
+		*/
 		// TODO : print a html form using printwriter.
 	}
 
@@ -56,10 +67,10 @@ public class BagServlet extends HttpServlet {
 			res.sendError(400);
 		}
 		HttpSession session = req.getSession();
-		Bag bag = (Bag) session.getAttribute("Bag");
+		Bag bag = (Bag) session.getAttribute("bag");
 		if(bag == null){
 			bag = new Bag();
-			session.setAttribute("Bag", bag);
+			session.setAttribute("bag", bag);
 		}
 		bag.setItem(ref,qtyint);
 		res.sendRedirect(req.getContextPath()+"/bag");
