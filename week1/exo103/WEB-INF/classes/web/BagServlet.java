@@ -13,7 +13,6 @@ import javax.servlet.RequestDispatcher;
 @WebServlet("/bag")
 public class BagServlet extends HttpServlet {
 	
-	Bag myBag = new Bag();
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse res) 
 	throws ServletException, IOException {
@@ -25,7 +24,11 @@ public class BagServlet extends HttpServlet {
 		out.write("ref : <input name=\"ref\"> <BR>");
 		out.write("qty : <input name=\"qty\"> <BR>");
 		out.write("<input type=\"submit\" value=\"envoi\"></form>"); 
-		myBag.print(out);
+		Bag bag = (Bag) req.getSession().getAttribute("Bag");
+		if(!(bag == null)){
+			bag.print(out);
+		}
+		
 		out.write("</body>");
 		
 		// TODO : print a html form using printwriter.
@@ -52,7 +55,13 @@ public class BagServlet extends HttpServlet {
 		if(qty == null || qty.isEmpty()){
 			res.sendError(400);
 		}
-		myBag.setItem(ref, qtyint);
+		HttpSession session = req.getSession();
+		Bag bag = (Bag) session.getAttribute("Bag");
+		if(bag == null){
+			bag = new Bag();
+			session.setAttribute("Bag", bag);
+		}
+		bag.setItem(ref,qtyint);
 		res.sendRedirect(req.getContextPath()+"/bag");
 
 	}
